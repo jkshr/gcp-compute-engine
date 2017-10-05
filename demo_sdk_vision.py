@@ -20,17 +20,32 @@ def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+# ラベル検知
+def detect_labels(file):
+    content = file.read()
 
+    image = types.Image(content=content)
+
+    client = vision.ImageAnnotatorClient()
+    response = client.label_detection(image=image)
+    labels = response.label_annotations
+
+    return labels
 
 @app.route('/', methods=['GET', 'POST'])
 def submit():
     if request.method == 'POST':
 
-        client = vision.ImageAnnotatorClient()
-
         file = request.files['file']
         if file and allowed_file(file.filename):
-            image_filenames = request.files['file'].filename
+#            image_filenames = request.files['file'].filename
+            rtn = detect_labels(file)
+            results = rtn
+
+    # index.htmlに結果を返す
+#    return render_template('index.html')
+    return render_template('index.html', type='label detection', results=results)
+'''
             content = file.read()
 
             image = types.Image(content=content)
@@ -42,12 +57,12 @@ def submit():
 #            print(labels)
 #            for label in labels:
 #                print(label.description)
-
+'''
             # 'labels'を直接返すと以下のエラーが出るためTBD
             # UnboundLocalError: local variable 'labels' referenced before assignment
-            results = labels
+#            results = rtn
     # index.htmlに結果を返す
-    return render_template('index.html', type='label detection', results=results)
+#    return render_template('index.html', type='label detection', results=results)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
