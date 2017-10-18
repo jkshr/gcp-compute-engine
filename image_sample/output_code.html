@@ -1,0 +1,16 @@
+<!--output_code.html -->
+<head>
+    <meta charset="UTF-8">
+    <title>QR Code</title>
+</head>
+    <body>
+    <form action={{ url_for('event') }} method="post">
+        <input type="submit" name="submit" value="Retry">
+        <input type="submit" name="submit" value="Quit">
+    <br>
+        <h2>{{data}}</h2>
+
+        <h2>QR image</h2>
+        <img src="{{qr_b64data}}" alt="{{qr_name}}" >
+    </body>
+</html>
